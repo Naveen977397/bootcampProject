@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Footer from "@/app/components/Footer"
 import Button from "@/app/components/Button"
@@ -21,29 +21,33 @@ interface Doctor {
     address:string;
 }
 
-const Booking: React.FC<Doctor>=({address})=>{
+const Booking: React.FC=()=>{
 
-    let [isOpen, setIsOpen] = useState(false)
-    let [pisOpen, setpIsOpen] = useState(false)
-    let [addressData, setaddressData]=useState<string | null>(null)
-    let {id}=useParams()
+    const [isOpen, setIsOpen] = useState(false)
+    // const [pisOpen, setpIsOpen] = useState(false)
+    const [addressData, setaddressData]=useState<string>("loading address ...");
+    const {id}=useParams()
     // const options = [
     //     'MedicareHeart Institute, Okhla Road',
     // ]
 
-    // useEffect(()=>{
-    //     async function fetching(){
-    //         let fetchData: Doctor[]=await(await fetch("/data/doctors.json")).json()
-    //         console.log(fetchData)
-    //         fetchData.find((item)=>{
-    //             if(item.id===Number(id)){
-    //                 // console.log(item.address)
-    //                 setaddressData(item.address)
-    //             }
-    //         })
-    //     }
-    //     fetching()
-    // },[id])
+    useEffect(()=>{
+        async function fetchDoctor(){
+            let fetchData: Doctor[]=await(await fetch("/data/doctors.json")).json()
+            console.log(fetchData)
+            fetchData.find((item)=>{
+                if(item.id===Number(id)){
+                    // console.log(item.address)
+                    setaddressData(item.address)
+                }
+            })
+        }
+        fetchDoctor()
+    },[id])
+
+    const dropDown=()=>{
+        setIsOpen(!isOpen)
+    }
     return(
         <>
         <main className={styles.hero}>
@@ -71,15 +75,15 @@ const Booking: React.FC<Doctor>=({address})=>{
                         </div>
                         <div className={styles.address}>
                             <div className={styles.select} onClick={()=>setIsOpen(!isOpen)}>
-                                <p className={pisOpen ? styles.showpTag : styles.notshowpTag}>{addressData}</p>
+                                <p className={isOpen ? styles.showpTag : styles.notshowpTag}>{addressData}</p>
                                 <i className="fa-solid fa-caret-down"></i>
-                                <ul className={isOpen==true ? styles.show_select_options : styles.hide_select_options} onClick={()=>setpIsOpen(true)}>
+                                <ul className={isOpen==true ? styles.show_select_options : styles.hide_select_options}>
+                                    <li onClick={()=>setIsOpen(!isOpen)}>{addressData}</li>
                                     {/* {options.map((option, index) => (
                                         <li key={index} onClick={() => setSelectedOption(option)}>
                                             {option}
                                         </li>
                                     ))} */}
-                                    <li>{addressData}</li>
                                 </ul>
                             </div>
                         </div>

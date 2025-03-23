@@ -1,49 +1,19 @@
 'use client'
 
-import styles from "../styles/Appoint.module.css";
-import Footer from '../components/Footer';
-import DoctorCard from "../components/DoctorCard";
+import styles from "@/app/styles/Appoint.module.css";
+import Footer from '@/app/components/Footer';
+import DoctorCard from "@/app/components/DoctorCard";
 import { useState, useEffect } from 'react';
 import {useRouter} from  'next/navigation';
 
-interface Doctor {
-    id:number;
-    name: string;
-    specialty: string;
-    experience: number ;
+type Doctor = {
+    doc_id:number;
+    doc_name: string;
+    specialization: string;
+    experience: number;
     rating: number;
     gender: string;
 }
-
-export const doctors: Doctor[] = [
-    { id: 1, name: "Dr. Tony Stark", specialty: "Dentist", experience: 4, rating: 5, gender: "Male" },
-    { id: 2, name: "Dr. Natasha Romanoff", specialty: "Cardiologist", experience: 10, rating: 4, gender: "Female" },
-    { id: 3, name: "Dr. Bruce Banner", specialty: "Neurologist", experience: 15, rating: 2, gender: "Male" },
-    { id: 4, name: "Dr. Carol Danvers", specialty: "Pediatrician", experience: 8, rating: 1, gender: "Female" },
-    { id: 5, name: "Dr. Peter Parker", specialty: "Orthopedic", experience: 5, rating: 3, gender: "Male" },
-    { id: 6, name: "Dr. Stephen Strange", specialty: "Surgeon", experience: 12, rating: 1, gender: "Male" },
-    { id: 7, name: "Dr. Reed Richards", specialty: "Neurologist", experience: 18, rating: 5, gender: "Male" },
-    { id: 8, name: "Dr. Susan Storm", specialty: "Gynecologist", experience: 14, rating: 4, gender: "Female" },
-    { id: 9, name: "Dr. Johnny Storm", specialty: "Dermatologist", experience: 6, rating: 3, gender: "Male" },
-    { id: 10, name: "Dr. Ben Grimm", specialty: "Orthopedic", experience: 9, rating: 4, gender: "Male" },
-    { id: 11, name: "Dr. Wanda Maximoff", specialty: "Psychiatrist", experience: 11, rating: 5, gender: "Female" },
-    { id: 12, name: "Dr. Vision", specialty: "AI Specialist", experience: 7, rating: 5, gender: "Male" },
-    { id: 13, name: "Dr. Scott Lang", specialty: "Microbiologist", experience: 5, rating: 4, gender: "Male" },
-    { id: 14, name: "Dr. Hope Pym", specialty: "Immunologist", experience: 12, rating: 4, gender: "Female" },
-    { id: 15, name: "Dr. Hank Pym", specialty: "Biochemist", experience: 20, rating: 5, gender: "Male" },
-    { id: 16, name: "Dr. Shuri", specialty: "Biomedical", experience: 6, rating: 1, gender: "Female" },
-    { id: 17, name: "Dr. Erik Selvig", specialty: "Astrophysicist", experience: 22, rating: 3, gender: "Male" },
-    { id: 18, name: "Dr. Jane Foster", specialty: "Astrophysicist", experience: 16, rating: 4, gender: "Female" },
-    { id: 19, name: "Dr. Nick Fury", specialty: "Ophthalmologist", experience: 30, rating: 5, gender: "Male" },
-    { id: 20, name: "Dr. Maria Hill", specialty: "General Physician", experience: 8, rating: 4, gender: "Female" },
-    { id: 21, name: "Dr. Peggy Carter", specialty: "Oncologist", experience: 19, rating: 5, gender: "Female" },
-    { id: 22, name: "Dr. Howard Stark", specialty: "Geneticist", experience: 25, rating: 4, gender: "Male" },
-    { id: 23, name: "Dr. Sam Wilson", specialty: "Physical Therapist", experience: 10, rating: 3, gender: "Male" },
-    { id: 24, name: "Dr. Bucky Barnes", specialty: "Prosthetic Specialist", experience: 12, rating: 4, gender: "Male" },
-    { id: 25, name: "Dr. T'Challa", specialty: "Trauma Surgeon", experience: 15, rating: 5, gender: "Male" },
-    { id: 26, name: "Dr. Okoye", specialty: "Emergency", experience: 9, rating: 2, gender: "Female" },
-    { id: 27, name: "Dr. M'Baku", specialty: "General Surgery", experience: 13, rating: 3, gender: "Male" }
-];
 
 
 interface Filters {
@@ -52,17 +22,43 @@ interface Filters {
     gender: string;
 }
 
-export default function Appoint() {
+export default function Appoint () {
+
     const [filters, setFilters] = useState<Filters>({ rating: 0, experience: 0, gender: "All" });
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const doctorsPerPage = 6;
+    const [doctors,setDoctors] = useState<Doctor[]>([]);
     const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
     const router = useRouter() ;
+
+    useEffect(()=>{
+        const fetchDoc = async()=>{
+            try {
+                const res = await fetch("http://localhost:5000/api/v1/doctors");
+                if(!res.ok){
+                    throw new Error('failed to fetch doctors data');
+                }
+                const data = await res.json();
+                console.log("Fetched Data:", data);
+                setDoctors(data.data);
+                setFilteredDoctors(data.data);
+                console.log(doctors);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchDoc();
+    },[]);
+    console.log("After Fetch - Doctors:", doctors);
     // Function to filter doctors
     const applyFilters = () => {
-        let filtered = doctors;
-
+        if(!doctors||doctors.length===0){
+            return [];          
+        }
+        let filtered =[...doctors];
+        
+        // console.log("filtered doctors",filtered);
         // Apply rating filter
         if (filters.rating !== 0) {
             filtered = filtered.filter(doctor => doctor.rating === filters.rating);
@@ -88,25 +84,28 @@ export default function Appoint() {
         // Apply search query filter
         if (searchQuery) {
             filtered = filtered.filter(doctor => 
-                doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase())
+                doctor.doc_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
-
         return filtered;
     };
 
-    // Set filtered doctors based on applied filters and default to best rated doctors
+    // Set filtered doctors based on applied filters
     useEffect(() => {
-        const bestRatedDoctors = [...doctors].sort((a, b) => b.rating - a.rating).slice(0, 6);
         const filtered = applyFilters();
-        setFilteredDoctors(filtered.length > 0 ? filtered : bestRatedDoctors);
+        
+        if (filtered.length > 0) {
+            setFilteredDoctors(filtered);
+        }else{
+            setFilteredDoctors([]);
+        }
+        setCurrentPage(1); 
     }, [filters, searchQuery]);
 
     // Handle search change
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
-        setCurrentPage(1); // Reset to first page when search query changes
     };
 
     // Reset filters
@@ -228,11 +227,17 @@ export default function Appoint() {
                             getDoctorsForCurrentPage().map((doctor, index) => (
                                 // <DoctorCard key={index} onClick={()=>router.push(`/appointment/${doctor.id}`)} {...doctor} />
                                 <div 
-                                    key={doctor.id} 
-                                    onClick={() => router.push(`/appointment/${doctor.id}`)}
+                                    key={doctor.doc_id} 
+                                    onClick={() => router.push(`/appointment/${doctor.doc_id}`)}
                                     style={{ cursor: "pointer" }} // Make it visually clickable
                                 >
-                                    <DoctorCard {...doctor} />
+                                    <DoctorCard 
+                                        name={doctor.doc_name} 
+                                        specialty={doctor.specialization} 
+                                        experience={doctor.experience} 
+                                        rating={doctor.rating} 
+                                        gender={doctor.gender} 
+                                    />
                                 </div>
                             ))
                         ) : (
