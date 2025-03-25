@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import Login from "./login/page";
 
 
 
@@ -11,8 +12,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar/>
-        {children}
+          <Navbar/>
+          {children}
       </body>
     </html>
   );

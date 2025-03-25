@@ -31,19 +31,19 @@ const Booking: React.FC=()=>{
     //     'MedicareHeart Institute, Okhla Road',
     // ]
 
-    useEffect(()=>{
-        async function fetchDoctor(){
-            let fetchData: Doctor[]=await(await fetch("/data/doctors.json")).json()
-            console.log(fetchData)
-            fetchData.find((item)=>{
-                if(item.id===Number(id)){
-                    // console.log(item.address)
-                    setaddressData(item.address)
-                }
-            })
-        }
-        fetchDoctor()
-    },[id])
+    // useEffect(()=>{
+    //     async function fetchDoctor(){
+    //         let fetchData: Doctor[]=await(await fetch("/data/doctors.json")).json()
+    //         console.log(fetchData)
+    //         fetchData.find((item)=>{
+    //             if(item.id===Number(id)){
+    //                 // console.log(item.address)
+    //                 setaddressData(item.address)
+    //             }
+    //         })
+    //     }
+    //     fetchDoctor()
+    // },[id])
 
     const dropDown=()=>{
         setIsOpen(!isOpen)

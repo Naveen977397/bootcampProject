@@ -25,14 +25,41 @@ interface Filters {
 export default function Appoint () {
 
     const [filters, setFilters] = useState<Filters>({ rating: 0, experience: 0, gender: "All" });
+    const[searchValue,setsearchValue] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const doctorsPerPage = 6;
     const [doctors,setDoctors] = useState<Doctor[]>([]);
     const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const router = useRouter() ;
 
+
+
+    useEffect(() => {
+        const checkAuth = async () => {
+          try {
+            const res = await fetch("http://localhost:5000/api/v1/appointment", {
+              credentials: "include",
+            });
+    
+            if (res.ok) {
+              setIsAuthenticated(true);
+            } else {
+              router.push("/login"); // Redirect if not authenticated
+            }
+          } catch (error) {
+            console.error("Auth check failed:", error);
+            router.push("/login");
+          } 
+        };
+        checkAuth();
+      }, [router]);
+
     useEffect(()=>{
+        if(!isAuthenticated){
+            return;
+        }
         const fetchDoc = async()=>{
             try {
                 const res = await fetch("http://localhost:5000/api/v1/doctors");
@@ -49,7 +76,7 @@ export default function Appoint () {
             }
         }
         fetchDoc();
-    },[]);
+    },[isAuthenticated]);
     console.log("After Fetch - Doctors:", doctors);
     // Function to filter doctors
     const applyFilters = () => {
@@ -105,7 +132,7 @@ export default function Appoint () {
 
     // Handle search change
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(event.target.value);
+        setsearchValue(event.target.value);
     };
 
     // Reset filters
@@ -122,6 +149,10 @@ export default function Appoint () {
         return filteredDoctors.slice(startIndex, endIndex);
     };
 
+    if(!isAuthenticated){
+        return null;       
+    }
+
     return (
         <div>
             <div className={styles.searchSection}>
@@ -133,11 +164,11 @@ export default function Appoint () {
                             type="text" 
                             placeholder="Search Doctor" 
                             className={styles.inputField} 
-                            value={searchQuery} 
-                            onChange={handleSearchChange} 
+                            onChange={(e)=>handleSearchChange(e)} 
+                            onKeyDown={(e)=>{if(e.key==="Enter"){setSearchQuery(searchValue)}}}
                         />
                     </div>
-                    <button className={styles.searchButton}>Search</button>
+                    <button className={styles.searchButton} onClick={()=>setSearchQuery(searchValue)}>Search</button>
                 </div>
             </div>
 

@@ -7,9 +7,13 @@ interface InputProps {
   placeholder?: string;
   text?: string;
   type?: string;
+  name?: string;
+  value?: string;
+  required?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input: React.FC<InputProps> = ({ label, placeholder, text, type }) => {
+const Input: React.FC<InputProps> = ({ label, placeholder, text, type, name,value,required,onChange }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
@@ -26,7 +30,14 @@ const Input: React.FC<InputProps> = ({ label, placeholder, text, type }) => {
         )}
 
         {/* Input Field */}
-        <input type={inputType} placeholder={placeholder} className={styles.inputField} />
+        <input 
+            type={inputType} 
+            placeholder={placeholder} 
+            className={styles.inputField} 
+            name={name} 
+            value={value} 
+            required={required}
+            onChange={onChange}/>
 
         {/* Password Toggle Icon (With Opacity Change) */}
         {type === "password" && (
