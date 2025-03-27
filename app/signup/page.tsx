@@ -93,7 +93,7 @@ const Signup = () => {
 
                     <Button text="Signup" variant='primary' type="submit" />
 
-                    <Button text='Reset' variant='secondary' onClick={resetHandler}/>
+                    <Button text='Reset' variant='secondary' onClick={resetHandler} type="button"/>
                 </form>
             </div>
         </div>

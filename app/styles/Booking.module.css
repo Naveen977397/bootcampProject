@@ -87,26 +87,36 @@
     width: 100%;
 }
 
+
 .booking button:nth-child(1) {
     width: 50%;
     padding: 10px 20px;
     border: none;
-    background: var(--primary-color);
+    /* background: var(--primary-color); */
     color: white;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
     border-top-left-radius:5px;
     border-bottom-left-radius:5px;
+    
 }
 
-.booking button:nth-child(2) {
+.booking button:nth-child(2){
     width: 50%;
-    background: var(--secondary-color); 
+    /* background: var(--secondary-color);  */
     color: var(--primary-color);
     border: 1px solid #F4D7D0;
     border-top-right-radius:5px;
     border-bottom-right-radius:5px;
+    color: white;
+    cursor:pointer;
+}
+.activeButton {
+    background-color: var(--primary-color); /* Change to your highlight color */
+    color: white;
+    font-weight: bold;
+    border: 2px solid var(--primary-color);
 }
 
 .address {
@@ -251,6 +261,24 @@
 .slotTwo>hr{
     opacity: 0.2;
 }
+.slots button:focus{
+    color: red;
+}
+
+.slots button{
+    padding: 8px 16px;
+    border: 1px solid #F4D7D0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    font-family: var(--primary-font);
+    font-weight: bold;
+    width: 100px;
+    height: 40px; 
+}
+
 .slotTwo > div:nth-of-type(2){
     height:80%;
     padding:2% 4%;
@@ -261,11 +289,6 @@
     justify-items: center;
 }
 
-/* .slotOne > div:nth-of-type(2)> span{
-    padding:5px 0px;
-} */
-/* media query */
-/* Tablets (max-width: 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
 
   .fstcontainer{
@@ -329,6 +352,8 @@
     .getstartedbtn{
         font-size: 8px;
     }
+
+    
 
     .booking button:nth-child(1) {
         font-size: 12px;

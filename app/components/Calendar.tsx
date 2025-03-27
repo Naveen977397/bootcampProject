@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "@/app/styles/Calendar.module.css";
 
-const Calendar = () => {
+const Calendar = ({setDate}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [visibleDates, setVisibleDates] = useState<Date[]>([]);
@@ -25,6 +25,11 @@ const Calendar = () => {
     }
     return dates;
   };
+
+  useEffect(() => {
+    console.log('selectedDate: in useeffect :', selectedDate);
+    setDate(selectedDate);
+  }, [selectedDate]);
 
   // Ensure visible dates update when month changes
   useEffect(() => {

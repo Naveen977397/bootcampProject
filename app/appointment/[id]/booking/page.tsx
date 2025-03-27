@@ -16,7 +16,6 @@ interface Doctor {
     speciality: string;
     experience: number;
     rating: number;
-    img_url: string;
     id:number;
     address:string;
 }
@@ -24,27 +23,97 @@ interface Doctor {
 const Booking: React.FC=()=>{
 
     const [isOpen, setIsOpen] = useState(false)
-    // const [pisOpen, setpIsOpen] = useState(false)
-    const [addressData, setaddressData]=useState<string>("loading address ...");
-    const {id}=useParams()
-    // const options = [
-    //     'MedicareHeart Institute, Okhla Road',
-    // ]
+    const[date, setDate] = useState('');
+    const [time,setTime] = useState('');
+    const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+    const[consultType, setConsultType]=useState('');
+    const [doctor, setdoctor]=useState<Doctor | null>(null);
+    const [addressData, setaddressData]=useState<string>('');
+    const {id}=useParams();
 
-    // useEffect(()=>{
-    //     async function fetchDoctor(){
-    //         let fetchData: Doctor[]=await(await fetch("/data/doctors.json")).json()
-    //         console.log(fetchData)
-    //         fetchData.find((item)=>{
-    //             if(item.id===Number(id)){
-    //                 // console.log(item.address)
-    //                 setaddressData(item.address)
-    //             }
-    //         })
-    //     }
-    //     fetchDoctor()
-    // },[id])
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1; // Months are zero-indexed
+        const day = d.getDate();
+        return `${year}-${month}-${day}`;
+      };
 
+
+    useEffect(()=>{
+        const fetchDoctor = async()=>{
+            try{
+                const response = await fetch(`http://localhost:5000/api/v1/doctors/${id}`);
+                const data = await response.json();
+                setdoctor(data.data);
+                setaddressData(data.data.location);
+            }
+            catch(error){
+                console.error('Error:', error);
+            }
+        }
+        fetchDoctor();
+    },[id]);
+
+
+    const handleBooking = async()=>{
+        if( !date||!time|| !consultType){
+            alert("please select all appointment details")
+            return;
+        }
+    const appointmentData = {
+        doctor_id: +(id),
+        date: formatDate(date),
+        time: time,
+        consultationType: consultType,
+    };
+
+    try{
+        const response = await fetch('http://localhost:5000/api/v1/bookAppointment', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },  
+            body: JSON.stringify(appointmentData),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if(response.ok){
+            alert("Appointment booked successfully");
+        }
+        else{
+            alert("Failed to book appointment");
+        }
+    }catch(error){
+        console.error('Error:', error);
+    }
+};
+
+useEffect(() => {
+    if (date) {
+        const fetchBookedSlots = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/appointments`,{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ date : formatDate(date), doctor_id: id})
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setBookedSlots(data.bookedSlots);
+                }
+            } catch (error) {
+                console.error("Error fetching booked slots:", error);
+            }
+        };
+        fetchBookedSlots();
+    }
+}, [date, id]);
+const isSlotDisabled = (slot: string) => bookedSlots.includes(slot);
     const dropDown=()=>{
         setIsOpen(!isOpen)
     }
@@ -67,11 +136,22 @@ const Booking: React.FC=()=>{
                     <article>
                         <div className={styles.heading_and_button}>
                             <p>Schedule Appointment</p>
-                            <Button text={'Book Appointment'} onClick={()=>{}} type={'submit'} variant={'smallcardButtonGreen'}/>
+                            <Button text={'Book Appointment'} onClick={handleBooking} type={'submit'} variant={'smallcardButtonGreen'}/>
                         </div>
                         <div className={styles.booking}>
-                            <button>Book Video Consult</button>
-                            <button>Book Hospital Visit</button>
+                        <button 
+                            onClick={() => setConsultType(consultType === 'online' ? '' : 'online')}
+                            className={consultType === 'online' ? styles.activeButton : ''}  
+                        >
+                            Book Video Consult
+                        </button>
+
+                        <button 
+                            onClick={()=>setConsultType(consultType === 'offline' ? '' : 'offline')}
+                            className={consultType === 'offline' ? styles.activeButton : ''}  
+                        >
+                            Book Hospital Visit
+                        </button>
                         </div>
                         <div className={styles.address}>
                             <div className={styles.select} onClick={()=>setIsOpen(!isOpen)}>
@@ -79,18 +159,13 @@ const Booking: React.FC=()=>{
                                 <i className="fa-solid fa-caret-down"></i>
                                 <ul className={isOpen==true ? styles.show_select_options : styles.hide_select_options}>
                                     <li onClick={()=>setIsOpen(!isOpen)}>{addressData}</li>
-                                    {/* {options.map((option, index) => (
-                                        <li key={index} onClick={() => setSelectedOption(option)}>
-                                            {option}
-                                        </li>
-                                    ))} */}
                                 </ul>
                             </div>
                         </div>
 
                     </article>
                     <article>
-                        <Calendar/>
+                        <Calendar setDate={setDate}/>
                     </article>
                     <article>
                         <div className={styles.slotOne}>
@@ -102,15 +177,17 @@ const Booking: React.FC=()=>{
                                 <span>2 slot</span>
                             </div>
                             <hr/>
-                            <div>
-                                <span><Button text={'9:00 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'9:30 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'10:00 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'10:30 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'11:00 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'11:30 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'12:00 AM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'12:30 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
+                            <div className={styles.slots}>
+                                {["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM","11:30 AM","12:00 AM","12:30 AM"].map(slot => (
+                                    <button 
+                                        key={slot}
+                                        onClick={() => setTime(slot)}
+                                        disabled={isSlotDisabled(slot)}
+                                        style={{ backgroundColor: isSlotDisabled(slot) ? "gray" : "white" }}
+                                    >
+                                        {slot}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                         <div className={styles.slotTwo}>
@@ -119,22 +196,24 @@ const Booking: React.FC=()=>{
                                     <i className="fa-solid fa-cloud-moon"></i>
                                     <label>Afternoon</label>
                                 </span>
-                                <span>2 slot</span>
+                                <span>{8-1}</span>
                             </div>
                             <hr/>
-                            <div>
-                                <span><Button text={'1:00 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'1:30 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'2:00 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'2:30 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'3:00 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'3:30 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'4:00 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
-                                <span><Button text={'4:30 PM'} onClick={()=>{}} type={'submit'} variant={'slotGreenBtn'}/></span>
+                            <div className={styles.slots}>
+                                {["1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM","3:30 PM","4:00 PM","4:30PM"].map(slot => (
+                                    <button 
+                                        key={slot}
+                                        onClick={() => setTime(slot)}
+                                        disabled={isSlotDisabled(slot)}
+                                        style={{ backgroundColor: isSlotDisabled(slot) ? "gray" : "white" }}
+                                    >
+                                        {slot}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </article>
-                    <Button text={'Next'} onClick={()=>{}} type={'submit'} variant={'largeGreenBtn'}/>
+                    <Button text={'Next'} onClick={handleBooking} variant={'largeGreenBtn'}/>
                 </div>
             </div>
         </main>

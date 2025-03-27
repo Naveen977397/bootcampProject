@@ -34,12 +34,10 @@ export default function Appoint () {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const router = useRouter() ;
 
-
-
     useEffect(() => {
         const checkAuth = async () => {
           try {
-            const res = await fetch("http://localhost:5000/api/v1/appointment", {
+            const res = await fetch("http://localhost:5000/api/v1/appoint", {
               credentials: "include",
             });
     
@@ -94,15 +92,19 @@ export default function Appoint () {
         // Apply experience filter
         if (filters.experience !== 0) {
             filtered = filtered.filter(doctor => {
-                if (filters.experience === 1) return doctor.experience <= 1;
-                if (filters.experience === 3) return doctor.experience > 1 && doctor.experience <= 3;
-                if (filters.experience === 5) return doctor.experience > 3 && doctor.experience <= 5;
-                if (filters.experience === 10) return doctor.experience > 5 && doctor.experience <= 10;
-                if (filters.experience === 15) return doctor.experience > 10;
-                return false;
+                const exp = Number(doctor.experience); // Ensure experience is a number
+        
+                switch (filters.experience) {
+                    case 1: return exp >= 0 && exp <= 1;    // 0-1 years
+                    case 3: return exp > 1 && exp <= 3;    // 1-3 years
+                    case 5: return exp > 3 && exp <= 5;    // 3-5 years
+                    case 10: return exp > 5 && exp <= 10;  // 5-10 years
+                    case 15: return exp > 10;              // 10+ years
+                    default: return true;
+                }
             });
         }
-
+        
         // Apply gender filter
         if (filters.gender !== "All") {
             filtered = filtered.filter(doctor => doctor.gender === filters.gender);
@@ -256,7 +258,6 @@ export default function Appoint () {
                     <div className={styles.card}>
                         {getDoctorsForCurrentPage().length > 0 ? (
                             getDoctorsForCurrentPage().map((doctor, index) => (
-                                // <DoctorCard key={index} onClick={()=>router.push(`/appointment/${doctor.id}`)} {...doctor} />
                                 <div 
                                     key={doctor.doc_id} 
                                     onClick={() => router.push(`/appointment/${doctor.doc_id}`)}

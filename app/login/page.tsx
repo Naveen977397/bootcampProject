@@ -18,7 +18,7 @@ const Login = () => {
         console.log(email,password);
 
         const response = await fetch('http://localhost:5000/api/v1/login', {
-            method: 'POST',
+            method: 'post',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ const Login = () => {
                             <input 
                                   type="email" 
                                   placeholder="emmawatson@gmail.com"
-                                //   value="email"
+                                  value={email}
                                   onChange={(e)=>setemail(e.target.value)}
                                   name="email"
                                   required
@@ -72,7 +72,7 @@ const Login = () => {
                             <input 
                                  type={pass ? "password" : "text"} 
                                  placeholder="Enter your Password" 
-                                //  value="password"
+                                 value={password}
                                  name='password'
                                  required
                                  onChange={(e)=>setpassword(e.target.value)}
@@ -89,7 +89,8 @@ const Login = () => {
                     <Button text="login" variant='primary' type='submit' />
 
                     {/* Reset Button */}
-                    <Button text='Reset' variant='secondary' onClick={()=> {
+                    <Button text='Reset' variant='secondary' type = "button" onClick={()=> {
+                        console.log("Reset Button Clicked");
                         setemail(""); 
                         setpassword("");
                         }}/>
