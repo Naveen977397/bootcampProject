@@ -19,7 +19,7 @@ const Signup = () => {
     const signupHandler = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/v1/signup', {  // ✅ Fix: Correct API URL format
+            const response = await fetch('http://localhost:5000/api/v1/signup', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -28,16 +28,16 @@ const Signup = () => {
             });
 
             const data = await response.json();
-            console.log("Signup Response:", data); // ✅ Debugging
+            console.log("Signup Response:", data); 
 
             if (response.ok) {
                 alert("Signup successful!");
-                router.push('/login'); // ✅ Redirect to login
+                router.push('/login'); 
             } else {
-                alert(data.message || "Signup failed. Please try again."); // ✅ Show error message from server
+                alert(data.message || "Signup failed. Please try again."); 
             }
         } catch (error) {
-            console.error("Signup Error:", error); // ✅ Fix: Display error in console
+            console.error("Signup Error:", error); 
             alert("An error occurred. Please try again.");
         }
     };

@@ -1,53 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "../styles/Navbar.module.css";
+import { useLogin } from "@/app/context/loginContext";
 
 const Navbar = () => {
+  const { user, logout, fetchUser } = useLogin(); 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/v1/status",{
-          method: "GET",
-          credentials: "include",
-        });
-        if (!response.ok) {
-          setIsAuthenticated(false);
-          return;
-        }
 
-        const data = await response.json();
-        setIsAuthenticated(data.authenticated);
-      } catch (error) {
-        console.error("Authentication check failed:", error);
-        setIsAuthenticated(false);
-      }
-    };
-  
-    checkAuth();
-  }, [pathname]);
-   // Run on route change
-
-  const handleLogout = async () => {
+  const handleLogout =(async () => {
     try {
-      await fetch("http://localhost:5000/api/v1/logout", {
-        method: "post",
-         credentials:"include"// Ensures session cookie is sent for logout
-      });
-
-      setIsAuthenticated(false);
-      router.push("/login"); // Redirect to login after logout
+      await logout();
+      setMenuOpen(false);
+      router.push("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.log("Logout failed:", error);
     }
-  };
+  });
+
+  useEffect(() => {
+    fetchUser();
+  }, [pathname]); 
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -82,7 +60,7 @@ const Navbar = () => {
 
       {/* Desktop Auth Buttons */}
       <div className={styles.authButtons}>
-        {isAuthenticated ? (
+        {user ? (
           <button className={styles.login} onClick={handleLogout}>
             Logout
           </button>
@@ -98,14 +76,12 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Hamburger Menu Icon - Only visible on mobile */}
       <button className={styles.hamburger} onClick={toggleMenu}>
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      {/* Mobile Menu (shown when hamburger is clicked) */}
       <div className={`${styles.mobileMenu} ${menuOpen ? styles.active : ""}`}>
         <Link className={styles.mobileLink} href="/home">
           Home
@@ -120,7 +96,7 @@ const Navbar = () => {
           Reviews
         </Link>
         <div className={styles.mobileAuth}>
-          {isAuthenticated ? (
+          {user ? (
             <button className={styles.login} onClick={handleLogout}>
               Logout
             </button>
@@ -141,3 +117,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

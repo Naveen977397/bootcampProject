@@ -22,14 +22,13 @@ const Input: React.FC<InputProps> = ({ label, placeholder, text, type, name,valu
     <div className={styles.inputContainer}>
       {label && <label className={styles.label}>{label}</label>}
       <div className={styles.inputWrapper}>
-        {/* Left-side Icon (e.g., Lock Icon) */}
+
         {text && (
           <span className={styles.icon}>
             <img src={text} alt="icon" />
           </span>
         )}
 
-        {/* Input Field */}
         <input 
             type={inputType} 
             placeholder={placeholder} 
@@ -39,7 +38,6 @@ const Input: React.FC<InputProps> = ({ label, placeholder, text, type, name,valu
             required={required}
             onChange={onChange}/>
 
-        {/* Password Toggle Icon (With Opacity Change) */}
         {type === "password" && (
           <img 
             src="./Eye.svg" 

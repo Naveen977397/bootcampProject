@@ -4,7 +4,7 @@ import styles from "../styles/Button.module.css";
 interface ButtonProps {
     text?: string;
     type?: "button" | "submit" | "reset";
-    variant?: "primary" | "secondary" |"slotGreenBtn" | 'largeGreenBtn' |'smallcardButtonGreen';
+    variant?: "primary" | "secondary" | 'largeGreenBtn' |'smallcardButtonGreen';
     onClick?: () => void;
   }
 

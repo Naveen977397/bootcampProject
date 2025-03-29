@@ -117,6 +117,13 @@ const isSlotDisabled = (slot: string) => bookedSlots.includes(slot);
     const dropDown=()=>{
         setIsOpen(!isOpen)
     }
+
+    const morning = ["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM","11:30 AM","12:00 AM","12:30 AM"];
+    const afternoon = ["1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM","3:30 PM","4:00 PM","4:30PM"];
+
+    const remaining = (arr:string[])=>{
+        return arr.filter (slot =>!isSlotDisabled(slot)).length;
+    }
     return(
         <>
         <main className={styles.hero}>
@@ -174,11 +181,11 @@ const isSlotDisabled = (slot: string) => bookedSlots.includes(slot);
                                     <i className="fa-solid fa-cloud-sun"></i>
                                     <label>Morning</label>
                                 </span>
-                                <span>2 slot</span>
+                                <span>{remaining(morning)} slot</span>
                             </div>
                             <hr/>
                             <div className={styles.slots}>
-                                {["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM","11:30 AM","12:00 AM","12:30 AM"].map(slot => (
+                                {morning.map(slot => (
                                     <button 
                                         key={slot}
                                         onClick={() => setTime(slot)}
@@ -196,11 +203,11 @@ const isSlotDisabled = (slot: string) => bookedSlots.includes(slot);
                                     <i className="fa-solid fa-cloud-moon"></i>
                                     <label>Afternoon</label>
                                 </span>
-                                <span>{8-1}</span>
+                                <span>{remaining(afternoon)} slot</span>
                             </div>
                             <hr/>
                             <div className={styles.slots}>
-                                {["1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM","3:30 PM","4:00 PM","4:30PM"].map(slot => (
+                                {afternoon.map(slot => (
                                     <button 
                                         key={slot}
                                         onClick={() => setTime(slot)}

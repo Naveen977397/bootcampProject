@@ -5,6 +5,7 @@ import Footer from '@/app/components/Footer';
 import DoctorCard from "@/app/components/DoctorCard";
 import { useState, useEffect } from 'react';
 import {useRouter} from  'next/navigation';
+import {useLogin} from '@/app/context/loginContext'
 
 type Doctor = {
     doc_id:number;
@@ -31,33 +32,16 @@ export default function Appoint () {
     const doctorsPerPage = 6;
     const [doctors,setDoctors] = useState<Doctor[]>([]);
     const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const router = useRouter() ;
 
-    useEffect(() => {
-        const checkAuth = async () => {
-          try {
-            const res = await fetch("http://localhost:5000/api/v1/appoint", {
-              credentials: "include",
-            });
-    
-            if (res.ok) {
-              setIsAuthenticated(true);
-            } else {
-              router.push("/login"); // Redirect if not authenticated
-            }
-          } catch (error) {
-            console.error("Auth check failed:", error);
-            router.push("/login");
-          } 
-        };
-        checkAuth();
-      }, [router]);
+    const{user} = useLogin(); 
+
+    const loginContext = useLogin();
+    if (!loginContext || !loginContext.user) {
+        return <h1>Not authorized</h1>;
+    }
 
     useEffect(()=>{
-        if(!isAuthenticated){
-            return;
-        }
         const fetchDoc = async()=>{
             try {
                 const res = await fetch("http://localhost:5000/api/v1/doctors");
@@ -74,43 +58,38 @@ export default function Appoint () {
             }
         }
         fetchDoc();
-    },[isAuthenticated]);
-    console.log("After Fetch - Doctors:", doctors);
-    // Function to filter doctors
+    },[]);
+
     const applyFilters = () => {
         if(!doctors||doctors.length===0){
             return [];          
         }
         let filtered =[...doctors];
         
-        // console.log("filtered doctors",filtered);
-        // Apply rating filter
         if (filters.rating !== 0) {
             filtered = filtered.filter(doctor => doctor.rating === filters.rating);
         }
 
-        // Apply experience filter
         if (filters.experience !== 0) {
             filtered = filtered.filter(doctor => {
-                const exp = Number(doctor.experience); // Ensure experience is a number
+                const exp = Number(doctor.experience); 
         
                 switch (filters.experience) {
-                    case 1: return exp >= 0 && exp <= 1;    // 0-1 years
-                    case 3: return exp > 1 && exp <= 3;    // 1-3 years
-                    case 5: return exp > 3 && exp <= 5;    // 3-5 years
-                    case 10: return exp > 5 && exp <= 10;  // 5-10 years
-                    case 15: return exp > 10;              // 10+ years
+                    case 0: return exp >= 0 && exp <= 1;   
+                    case 1: return exp > 1 && exp <= 3;   
+                    case 3: return exp > 3 && exp <= 5;    
+                    case 5: return exp > 5 && exp <= 10;
+                    case 10: return exp >10 && exp <=15;  
+                    case 15: return exp > 15;              
                     default: return true;
                 }
             });
         }
         
-        // Apply gender filter
         if (filters.gender !== "All") {
             filtered = filtered.filter(doctor => doctor.gender === filters.gender);
         }
 
-        // Apply search query filter
         if (searchQuery) {
             filtered = filtered.filter(doctor => 
                 doctor.doc_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -120,7 +99,6 @@ export default function Appoint () {
         return filtered;
     };
 
-    // Set filtered doctors based on applied filters
     useEffect(() => {
         const filtered = applyFilters();
         
@@ -132,18 +110,15 @@ export default function Appoint () {
         setCurrentPage(1); 
     }, [filters, searchQuery]);
 
-    // Handle search change
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setsearchValue(event.target.value);
     };
 
-    // Reset filters
     const resetFilters = () => {
         setFilters({ rating: 0, experience: 0, gender: "All" });
         setSearchQuery("");
     };
 
-    // Pagination logic
     const totalPages = Math.ceil(filteredDoctors.length / doctorsPerPage);
     const getDoctorsForCurrentPage = () => {
         const startIndex = (currentPage - 1) * doctorsPerPage;
@@ -151,17 +126,13 @@ export default function Appoint () {
         return filteredDoctors.slice(startIndex, endIndex);
     };
 
-    if(!isAuthenticated){
-        return null;       
-    }
-
     return (
         <div>
             <div className={styles.searchSection}>
                 <h2 className={styles.heading}>Find a doctor at your own ease</h2>
                 <div className={styles.searchContainer}>
                     <div className={styles.inputWrapper}>
-                        <img src="./Vector.svg" alt="Search Icon" className={styles.icon} />
+                        <img src="./Search.svg" alt="Search Icon" className={styles.icon} />
                         <input 
                             type="text" 
                             placeholder="Search Doctor" 
@@ -261,7 +232,7 @@ export default function Appoint () {
                                 <div 
                                     key={doctor.doc_id} 
                                     onClick={() => router.push(`/appointment/${doctor.doc_id}`)}
-                                    style={{ cursor: "pointer" }} // Make it visually clickable
+                                    style={{ cursor: "pointer" }}
                                 >
                                     <DoctorCard 
                                         name={doctor.doc_name} 
@@ -280,11 +251,14 @@ export default function Appoint () {
             </section>
 
             <section className={styles.paginationSection}>
-                <div id="paginationFrame">
-                    <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                        <p>Prev</p>
-                    </button>
-                    <div id="pageNumbers">
+                <div id={styles.paginationFrame}>
+                    <div>
+                        <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                            <p>Prev</p>
+                        </button>
+                    </div>
+                    
+                    <div id={styles.pageNumbers}>
                         {Array.from({ length: totalPages }).map((_, index) => (
                             <button
                                 key={index}
@@ -295,9 +269,12 @@ export default function Appoint () {
                             </button>
                         ))}
                     </div>
-                    <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                        <p>Next</p>
-                    </button>
+                    <div>
+                        <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                            <p>Next</p>
+                        </button>
+                    </div>
+                    
                 </div>
             </section>
 

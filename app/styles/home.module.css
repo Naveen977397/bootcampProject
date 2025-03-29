@@ -50,6 +50,7 @@
     border-radius: 16px;
     padding: 48px 24px 48px 24px;
     gap: 40px;
+    text-decoration: none;
 }
 
 .btn{
@@ -60,8 +61,11 @@
     padding: 20px 48px 20px 48px;
     gap: 16px;
     font-family: var(--primary-font);
+    text-decoration: none;
 }
-
+ .link{
+    text-decoration: none;
+ }
 
 .rightdiv{
     width: 55%;

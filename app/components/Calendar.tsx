@@ -7,7 +7,6 @@ const Calendar = ({setDate}) => {
   const [visibleDates, setVisibleDates] = useState<Date[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Generate days of the selected month starting from today (for current month)
   const generateMonthDates = (month: Date) => {
     const dates = [];
     const today = new Date();
@@ -31,17 +30,14 @@ const Calendar = ({setDate}) => {
     setDate(selectedDate);
   }, [selectedDate]);
 
-  // Ensure visible dates update when month changes
   useEffect(() => {
     setVisibleDates(generateMonthDates(currentMonth));
   }, [currentMonth]);
 
-  // Change to next month
   const nextMonth = () => {
     setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
-  // Change to previous month (only if it's not before the current month)
   const prevMonth = () => {
     const today = new Date();
     const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
@@ -50,17 +46,15 @@ const Calendar = ({setDate}) => {
     }
   };
 
-  // Scroll left/right in the 7-day list
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 70 * 7; // Adjusted width to fit 7 buttons
+      const scrollAmount = 70 * 7; 
       scrollRef.current.scrollBy({ left: direction === "left" ? -scrollAmount : scrollAmount, behavior: "smooth" });
     }
   };
 
   return (
     <div className={styles.calendar_container}>
-      {/* Month Navigation */}
       <div className={styles.month_navigation}>
         <button className={styles.nav_btn} onClick={prevMonth}>{"<"}</button>
         <span className={styles.month_label}>
@@ -69,7 +63,6 @@ const Calendar = ({setDate}) => {
         <button className={styles.nav_btn} onClick={nextMonth}>{">"}</button>
       </div>
 
-      {/* Scrollable 7-Day Calendar */}
       <div className={styles.scroll_wrapper}>
         <button className={styles.scroll_btn} onClick={() => scroll("left")}>{"<"}</button>
         <div className={styles.dates_list} ref={scrollRef}>

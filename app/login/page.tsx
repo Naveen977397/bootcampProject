@@ -2,8 +2,9 @@
 
 import styles from '../styles/login.module.css';
 import Button from '../components/Button';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
+import {useLogin} from '@/app/context/loginContext'
 
 const Login = () => {
 
@@ -11,6 +12,7 @@ const Login = () => {
     const[email,setemail] = useState('');
     const[password,setpassword] = useState('');
 
+    const {fetchUser, user} = useLogin();
     const router = useRouter();
 
     const loginhandler = async(e)=>{
@@ -33,11 +35,24 @@ const Login = () => {
         console.log(response.headers.get('set-cookie'));
         
         if(response.ok){
-            router.push('/appointment');
+            await fetchUser();
+            router.push('/');
         }
         else{
             alert("invalid credentials");
         }
+    }
+
+    useEffect(() => {
+        if (user) {
+            router.push("/home");
+        }
+    }, [user]);
+
+    if (user) {
+        return (
+            <p>Already logged in , redirecting to login page</p>
+        );
     }
 
     return (
@@ -48,7 +63,7 @@ const Login = () => {
                    <p>Are you a new member? <a className = {styles['signup-link']}href=".\signup">Sign up here.</a></p>
                 </div>
                 <form onSubmit={loginhandler}>
-                    {/* Email Field */}
+
                     <div className={styles.email}>
                         <label htmlFor='email'>Email</label>
                         <div className={styles.inputGroup}>
@@ -64,7 +79,6 @@ const Login = () => {
                         </div>
                     </div>
 
-                    {/* Password Field */}
                     <div className={styles.password}>
                         <label htmlFor='password'>Password</label>
                         <div className={styles.inputGroup}>
@@ -85,18 +99,20 @@ const Login = () => {
                         </div>
                     </div>
 
-                    {/* Login Button */}
                     <Button text="login" variant='primary' type='submit' />
 
-                    {/* Reset Button */}
                     <Button text='Reset' variant='secondary' type = "button" onClick={()=> {
                         console.log("Reset Button Clicked");
                         setemail(""); 
                         setpassword("");
                         }}/>
 
-                    {/* Forgot Password */}
-                    <p className={styles.forgotPassword}>Forgot Password ?</p>
+                    <Button text='google sign in' variant='primary' type = "button" onClick={()=> {
+                        router.push("http://localhost:5000/api/v1/google/");
+                        setemail(""); 
+                        setpassword("");
+                        }}/>
+                    
                 </form>
             </div>
         </div>

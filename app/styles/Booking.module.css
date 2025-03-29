@@ -61,9 +61,7 @@
     padding: 7% 4%;
     display: flex;
     flex-direction: column; 
-    /* justify-content: space-evenly; */
     gap:25px;
-    /* height: fit-content; */
 }
 
 .slotContainer article:nth-child(1){
@@ -92,8 +90,7 @@
     width: 50%;
     padding: 10px 20px;
     border: none;
-    /* background: var(--primary-color); */
-    color: white;
+    color: black;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
@@ -104,16 +101,15 @@
 
 .booking button:nth-child(2){
     width: 50%;
-    /* background: var(--secondary-color);  */
-    color: var(--primary-color);
+    color: black;
     border: 1px solid #F4D7D0;
     border-top-right-radius:5px;
     border-bottom-right-radius:5px;
-    color: white;
     cursor:pointer;
 }
+
 .activeButton {
-    background-color: var(--primary-color); /* Change to your highlight color */
+    background-color: var(--primary-color); 
     color: white;
     font-weight: bold;
     border: 2px solid var(--primary-color);
@@ -132,7 +128,7 @@
     border-radius: 6px;
     background: var(--secondary-color); 
     cursor: pointer;
-    appearance: none; /* to hide drop down icon */
+    appearance: none; 
     outline:none;
     height: 40px;
     position: relative;
@@ -148,7 +144,7 @@
     width: 100%;
     list-style-type: none;
     position: absolute;
-    top:60%;
+    top:100%;
     left: 0%;
     background-color: #FAF9F6;
     color: #333333;

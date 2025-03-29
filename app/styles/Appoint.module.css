@@ -212,11 +212,10 @@
 #paginationFrame{
     width: 100%;
     display: flex;
+    justify-content: center;
     padding-top: 27px;
     padding-bottom: 27px;
     gap: 10px;
-    border: 1px solid red ;
-    background-color: red;
     height: 100px;
 }
 
@@ -259,11 +258,6 @@
 }
 
 /* Pagination Section */
-.paginationSection {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
 
 #paginationFrame {
     display: flex;
@@ -271,13 +265,14 @@
     gap: 10px;
 }
 
+
 #prevPage,
 #nextPage {
     background: #fff;
     border: 1px solid #ccc;
     padding: 8px 16px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 #prevPage:disabled,
@@ -304,6 +299,5 @@
 }
 
 #pageNumbers button.activePage {
-    background-color: #007bff;
-    color: white;
+    color: black;
 }
