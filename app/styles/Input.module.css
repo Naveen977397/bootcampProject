@@ -36,11 +36,11 @@
   }
   
   .toggleHidden {
-    opacity: 0.5;  /* Dim the eye icon */
+    opacity: 0.5;  
     cursor: pointer;
 }
 
 .toggleVisible {
-    opacity: 1;  /* Make the eye icon more visible */
+    opacity: 1;  
     cursor: pointer;
 }

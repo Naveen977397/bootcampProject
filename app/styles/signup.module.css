@@ -2,7 +2,7 @@
     width: 100vw;
     flex-grow: 1;
     position: relative;
-    background-image: url('/login.svg'); /* Background Image */
+    background-image: url('/login.svg'); 
     background-size: cover;
     background-position: center;
     display: flex;
@@ -10,7 +10,7 @@
     align-items: center;
 }
 
-/* Login Form Container */
+
 .signup-form {
     display: flex;
     flex-direction: column;

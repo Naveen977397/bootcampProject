@@ -1,9 +1,8 @@
-/* Fullscreen Background */
 .login {
     width: 100vw;
     flex-grow: 1;
     position: relative;
-    background-image: url('/login.svg'); /* Background Image */
+    background-image: url('/login.svg'); 
     background-size: cover;
     background-position: center;
     display: flex;
@@ -11,7 +10,6 @@
     align-items: center;
 }
 
-/* Login Form Container */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -19,7 +17,7 @@
     width: 560px;
     padding: 30px 24px 30px 24px;
     border-radius: 16px;
-    background: #EFEFEF(255, 255, 255, 0.2); /* Glassmorphism */
+    background: #EFEFEF(255, 255, 255, 0.2); 
     backdrop-filter: blur(30px);
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     border: 1px solid #efefef(255, 255, 255, 0.3);
@@ -34,7 +32,7 @@
     align-items: space-between;
 }
 
-/* Title */
+
 .title {
     height: 39px;
     width: 91px;
@@ -95,7 +93,7 @@
     letter-spacing: -1%;
     color: #8C8C8C;
 }
-/* Input Group */
+
 .inputGroup {
     display: flex;
     align-items: center;
@@ -110,14 +108,12 @@
     margin: 12px 0px;
 }
 
-/* Input Icon */
 .icon {
     font-size: 16px;
     color: #8c8c8c;
     margin-right: 10px;
 }
 
-/* Input Field */
 .inputGroup input {
     width: 100%;
     border: none;
@@ -126,7 +122,6 @@
     background: transparent;
 }
 
-/* Login & Reset Buttons */
 .button {
     width: 512px;
     height: 60px;
@@ -139,39 +134,23 @@
     border: none;
 }
 
-
-
-/* Login Button */
 .loginButton {
     background-color: #1C4A2A;
     color: white;
 }
 
-/* Reset Button */
 .resetButton {
     background-color: #C6B09A;
     color: white;
 }
 
-/* Forgot Password */
-.forgotPassword {
-    width: 512px;
-    height: 20px;
-    font-family: var(--primary-font);
-    line-height: 100%;
-    letter-spacing: -1%;
-    text-align: center;
-    font-size: 16px;
-    color: #0E2515;
-}
-
 .toggleHidden {
-    opacity: 0.5;  /* Dim the eye icon */
+    opacity: 0.5;  
     cursor: pointer;
 }
 
 .toggleVisible {
-    opacity: 1;  /* Make the eye icon more visible */
+    opacity: 1;  
     cursor: pointer;
 }
 

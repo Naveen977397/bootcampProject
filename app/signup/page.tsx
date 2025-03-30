@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Signup = () => {
-    // const [pass, setPass] = useState(true);
     const [userInfo, setUserInfo] = useState({
         user_name: "",
         email: "",
@@ -16,8 +15,18 @@ const Signup = () => {
 
 
     const router = useRouter();
+
+    const validate = (email)=>{
+        const reg = /^[a-zA-Z0-9._%+-]+@(gmail\.com|tothenew\.com)$/;
+        return reg.test(email);
+
+    }
     const signupHandler = async (e) => {
         e.preventDefault();
+        if(!validate(userInfo.email)){
+            alert("wrong email format entered");
+            return
+        }
         try {
             const response = await fetch('http://localhost:5000/api/v1/signup', { 
                 method: 'POST',
@@ -77,7 +86,13 @@ const Signup = () => {
                         name="email"
                         value={userInfo.email}
                         required
-                        onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                        onChange={(e) => {
+                            setUserInfo({ ...userInfo, email: e.target.value });
+                            if(!validate(e.target.value)){
+                                console.log("invalid email domain ")
+                            }
+                            }
+                        }
                     />
 
                     <Input 

@@ -18,7 +18,7 @@ const LandingPage = () =>{
                     </p>
                 </div>
                 <div className={styles['button-container']}>
-                    <Link href={user ? "/appoinment" : "/login"} className={styles.link}>
+                    <Link href={user ? "/appointment" : "/login"} className={styles.link}>
                         <button className={styles.btn}>Get started</button>
                     </Link>
                     

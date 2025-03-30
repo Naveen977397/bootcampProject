@@ -32,11 +32,10 @@ const Login = () => {
         });
 
         const data = await response.json();
-        console.log(response.headers.get('set-cookie'));
         
         if(response.ok){
             await fetchUser();
-            router.push('/');
+            // router.push('/');
         }
         else{
             alert("invalid credentials");

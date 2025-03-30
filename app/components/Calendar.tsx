@@ -18,7 +18,7 @@ const Calendar = ({setDate}) => {
     for (let day = new Date(firstDay); day <= lastDay; day.setDate(day.getDate() + 1)) {
       const newDate = new Date(day);
       if (month.getMonth() === today.getMonth() && newDate < today) {
-        continue; // Skip past dates in current month
+        continue; 
       }
       dates.push(newDate);
     }

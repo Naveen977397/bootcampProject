@@ -18,7 +18,7 @@ const ProfilePage = () => {
                 const response = await fetch(`http://localhost:5000/api/v1/doctors/${id}`);
                 if (!response.ok) throw new Error("Failed to fetch doctor details");
                 const result = await response.json();
-                setDoctor(result.data); // Extracting 'data' object
+                setDoctor(result.data); 
             } catch (error) {
                 setError(error.message);
             } finally {
