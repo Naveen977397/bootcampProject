@@ -21,7 +21,7 @@ const Login = () => {
         e.preventDefault();
         console.log(email,password);
 
-        const response = await fetch('http://localhost:5000/api/v1/login', {
+        const response = await fetch('http://localhost:5000/api/v1/user/login', {
             method: 'post',
             credentials: 'include',
             headers: {
