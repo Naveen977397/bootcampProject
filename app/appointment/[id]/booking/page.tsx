@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Footer from "@/app/components/Footer"
 import Button from "@/app/components/Button"
 import Calendar from "@/app/components/Calendar"
-
+import {useRouter} from 'next/navigation'
 import { useParams } from 'next/navigation'
 import styles from "@/app/styles/Booking.module.css"
 
@@ -30,6 +30,8 @@ const Booking: React.FC=()=>{
     const [doctor, setdoctor]=useState<Doctor | null>(null);
     const [addressData, setaddressData]=useState<string>('');
     const {id}=useParams();
+
+    const router = useRouter();
 
     const formatDate = (date) => {
         const d = new Date(date);
@@ -81,7 +83,8 @@ const Booking: React.FC=()=>{
         console.log(data);
 
         if(response.ok){
-            alert("Appointment booked successfully");
+            alert("you will get appointment details on mail if approved");
+            router.push("/appointment")
         }
         else{
             alert("Failed to book appointment");

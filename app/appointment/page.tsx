@@ -36,9 +36,15 @@ export default function Appoint () {
 
     const{user} = useLogin(); 
 
-    const loginContext = useLogin();
-    if (!loginContext || !loginContext.user) {
-        return <h1>Not authorized</h1>;
+    let loginContext;
+    try {
+        loginContext = useLogin();
+        if (!loginContext || !loginContext.user) {
+            return <div>Not Found</div>;
+        }
+    } catch (error) {
+        console.error("Error using login context:", error);
+        return <div>Not Found</div>;
     }
 
     useEffect(()=>{
@@ -100,6 +106,7 @@ export default function Appoint () {
     };
 
     useEffect(() => {
+
         const filtered = applyFilters();
         
         if (filtered.length > 0) {

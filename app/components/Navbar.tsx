@@ -19,7 +19,7 @@ const Navbar = () => {
       setMenuOpen(false);
       router.push("/login");
     } catch (error) {
-      console.log("Logout failed:", error);
+      console.log("Logout failed:");
     }
   });
 
@@ -41,7 +41,6 @@ const Navbar = () => {
           <p className={styles.logoText}>MedCare</p>
         </div>
 
-        {/* Desktop Navigation Links */}
         <div className={styles["navbar-links"]}>
           <Link className={styles.link} href="/home">
             Home
@@ -58,7 +57,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Desktop Auth Buttons */}
       <div className={styles.authButtons}>
         {user ? (
           <button className={styles.login} onClick={handleLogout}>

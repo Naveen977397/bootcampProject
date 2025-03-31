@@ -25,40 +25,44 @@ export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
-
+    
+    
     const fetchUser = async () => {
         try {
           const res = await fetch("http://localhost:5000/api/v1/status", {
-            credentials: "include",
-            cache: "no-cache",
-            headers: {
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-            },
-          });
-      
-          const text = await res.text();
-          console.log("Raw Response:", text);
-      
-          if (!res.ok) {
-            console.log("Not authenticated, setting user to null");
-            setUser(null);
-            return;
-          }
-      
-          const userData = JSON.parse(text); 
-          console.log("User Data:", userData);
-      
-          setUser(userData);
+              credentials: "include",
+              cache: "no-cache",
+              headers: {
+                  "Cache-Control": "no-cache, no-store, must-revalidate",
+                  Pragma: "no-cache",
+                },
+            });
+            
+            const text = await res.text();
+            console.log("Raw Response:", text);
+            
+            if (!res.ok) {
+                console.log("Not authenticated, setting user to null");
+                setUser(null);
+                return;
+            }
+            
+            const userData = JSON.parse(text); 
+            console.log("User Data:", userData);
+            
+            setUser(userData);
         } catch (error) {
-          console.error("Failed to fetch user", error);
-          setUser(null);
+            console.error("Failed to fetch user", error);
+            setUser(null);
         } finally {
-          setIsLoading(false);
+            setIsLoading(false);
         }
-      };
-      
-
+    };
+    
+    useEffect(() => {
+        fetchUser();
+    }, []);
+    
     const logout = async () => {
         try {
             await fetch("http://localhost:5000/api/v1/logout", {
@@ -66,16 +70,12 @@ export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
                 credentials: "include",
             });
             setUser(null);
-            router.push("/login");
+            window.location.href = "/login"
         } catch (error) {
-            console.log(error);
+            console.log("error in logout");
         }
     };
-
-    useEffect(() => {
-        fetchUser();
-    }, []);
-
+    
     if (isLoading) {
         return null; 
     }

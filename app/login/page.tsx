@@ -8,6 +8,8 @@ import {useLogin} from '@/app/context/loginContext'
 
 const Login = () => {
 
+    console.log('inside login comp');
+
     const[pass,setPass] = useState(true);
     const[email,setemail] = useState('');
     const[password,setpassword] = useState('');
@@ -35,7 +37,6 @@ const Login = () => {
         
         if(response.ok){
             await fetchUser();
-            // router.push('/');
         }
         else{
             alert("invalid credentials");
@@ -43,6 +44,8 @@ const Login = () => {
     }
 
     useEffect(() => {
+        console.log('inside login');
+        
         if (user) {
             router.push("/home");
         }
